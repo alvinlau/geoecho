@@ -63,9 +63,9 @@ The generated code client is in the `/client` folder.  The main file to start fr
 
 Go modules are required - set the environment variable `GO111MODULE` to `on`.  You can either run `go mod download` to download the dependencies, or they will also be downloaded when you run via `go run main.go <apikey> <port>`
 
-Generate the Swagger docs UI via  `swag init -g main.go`
+Generate the Swagger docs UI via  `swag init -g main.go`, which uses [`swag`](https://github.com/swaggo/swag) and [`echo-swagger`](https://github.com/swaggo/echo-swagger).
 
-Generate the code client via `swagger generate client -f docs/swagger.json -A geoecho`
+Generate the code client via `swagger generate client -f docs/swagger.json -A geoecho`, which uses [`go-swagger`](https://github.com/go-swagger/go-swagger)
 
 
 # Edges Cases Tested
