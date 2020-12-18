@@ -9,6 +9,7 @@ import (
   // "encoding/json"
   // "fmt"
   "os"
+  "net"
   "strings"
   "net/http"
   "io/ioutil"
@@ -16,7 +17,7 @@ import (
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
   "github.com/swaggo/echo-swagger"
-  _ "github.com/alvinlau/geoecho/swagger"
+  // _ "github.com/alvinlau/geoecho/swagger"
   //  echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -101,6 +102,10 @@ func geolocate(c echo.Context) error {
 
   if strings.TrimSpace(ip) == "" || len(ip) == 0 {
     return c.String(http.StatusBadRequest, "missing ip address input")
+  } else if net.ParseIP(ip) == nil {
+    // https://golangbyexample.com/validate-an-ip-address-in-go/
+    msg := "invalid ip address, make sure it is valid ip v4 or v6 address"
+    return c.String(http.StatusBadRequest, msg)
   }
 
   // get API key
