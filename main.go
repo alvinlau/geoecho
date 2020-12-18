@@ -10,9 +10,9 @@ import (
   // "fmt"
   "os"
   "net"
-  "html"
   "strings"
   "net/http"
+  "net/url"
   "io/ioutil"
   "github.com/k0kubun/pp"
   "github.com/labstack/echo/v4"
@@ -25,11 +25,6 @@ import (
 // @title Geolocation API
 // @version 1.0
 // @description API for getting geolocation info
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
 
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
@@ -69,9 +64,24 @@ func geolocate(c echo.Context) error {
   ip := c.Param("ip") 
   pp.Println(ip)
 
-  if strings.TrimSpace(ip) == "" || len(ip) == 0 {
+  unspaced_ip, err := url.QueryUnescape(ip)
+  if err != nil {
+    return c.String(http.StatusBadRequest, "invalid ip format")
+  }
+
+  trimmed_ip := strings.TrimSpace(unspaced_ip)
+  if trimmed_ip == "" || len(trimmed_ip) == 0 {
     return c.String(http.StatusBadRequest, "missing ip address input")
-  } else if net.ParseIP(html.UnescapeString(strings.ReplaceAll(ip, "%3A", ":"))) == nil {
+  }
+  
+  escaped_ip, err := url.PathUnescape(trimmed_ip)
+  if err != nil {
+    return c.String(http.StatusBadRequest, "invalid ip format")
+  }  
+
+  pp.Println(escaped_ip)
+  if net.ParseIP(escaped_ip) == nil {
+    // example valid and invalid ipv4/v6 addresses
     // https://golangbyexample.com/validate-an-ip-address-in-go/
     msg := "invalid ip address, make sure it is valid ip v4 or v6 address"
     return c.String(http.StatusBadRequest, msg)
@@ -85,7 +95,7 @@ func geolocate(c echo.Context) error {
   }
 
   // call ipgeolocation API
-  resp, err := http.Get("https://api.ipgeolocation.io/ipgeo?apiKey=" + apikey + "&ip=" + ip)
+  resp, err := http.Get("https://api.ipgeolocation.io/ipgeo?apiKey=" + apikey + "&ip=" + escaped_ip)
   
   if err != nil {
     return c.String(http.StatusBadRequest, "invalid request to geolocation API")
