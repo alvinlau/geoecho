@@ -1,54 +1,44 @@
-basePath: /v2
-host: petstore.swagger.io
+host: localhost:8080
 info:
   contact:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: This is a sample server Petstore server.
+  description: API for getting geolocation info
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
+  title: Geolocation API
   version: "1.0"
-paths: {}
-securityDefinitions:
-  ApiKeyAuth:
-    in: header
-    name: Authorization
-    type: apiKey
-  BasicAuth:
-    type: basic
-  OAuth2AccessCode:
-    authorizationUrl: https://example.com/oauth/authorize
-    flow: accessCode
-    scopes:
-      admin: ' Grants read and write access to administrative information'
-    tokenUrl: https://example.com/oauth/token
-    type: oauth2
-  OAuth2Application:
-    authorizationUrl: ""
-    flow: application
-    scopes:
-      admin: ' Grants read and write access to administrative information'
-      write: ' Grants write access'
-    tokenUrl: https://example.com/oauth/token
-    type: oauth2
-  OAuth2Implicit:
-    authorizationUrl: https://example.com/oauth/authorize
-    flow: implicit
-    scopes:
-      admin: ' Grants read and write access to administrative information'
-      write: ' Grants write access'
-    type: oauth2
-  OAuth2Password:
-    authorizationUrl: ""
-    flow: password
-    scopes:
-      admin: ' Grants read and write access to administrative information'
-      read: ' Grants read access'
-      write: ' Grants write access'
-    tokenUrl: https://example.com/oauth/token
-    type: oauth2
+paths:
+  /geolocate/{ip}:
+    get:
+      consumes:
+      - text/plain
+      description: inquires IP geolocation's API to get details in json format
+      parameters:
+      - description: valid ipv4/v6 address
+        in: path
+        name: ip
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: invalid or missing ip address
+          schema:
+            type: string
+        "500":
+          description: unable to parse response from geolocation API
+          schema:
+            type: string
+      summary: returns geolocation info given ip address
+      tags:
+      - geolocate
 swagger: "2.0"

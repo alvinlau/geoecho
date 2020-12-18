@@ -1,4 +1,4 @@
-module github.com/xesina/golang-echo-realworld-example-app
+module github.com/alvinlau/geoecho
 
 go 1.14
 

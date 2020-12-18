@@ -10,6 +10,7 @@ import (
   // "fmt"
   "os"
   "net"
+  "html"
   "strings"
   "net/http"
   "io/ioutil"
@@ -17,14 +18,13 @@ import (
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
   "github.com/swaggo/echo-swagger"
-  // _ "github.com/alvinlau/geoecho/swagger"
-  //  echoSwagger "github.com/swaggo/echo-swagger"
+  _ "github.com/alvinlau/geoecho/docs"
 )
 
 
-// @title Swagger Example API
+// @title Geolocation API
 // @version 1.0
-// @description This is a sample server celler server.
+// @description API for getting geolocation info
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
@@ -35,34 +35,6 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host localhost:8080
-// @BasePath /api/v1
-
-// @securityDefinitions.basic BasicAuth
-
-// @securityDefinitions.apikey ApiKeyAuth
-// @in header
-// @name Authorization
-
-// @securitydefinitions.oauth2.application OAuth2Application
-// @tokenUrl https://example.com/oauth/token
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.implicit OAuth2Implicit
-// @authorizationUrl https://example.com/oauth/authorize
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.password OAuth2Password
-// @tokenUrl https://example.com/oauth/token
-// @scope.read Grants read access
-// @scope.write Grants write access
-// @scope.admin Grants read and write access to administrative information
-
-// @securitydefinitions.oauth2.accessCode OAuth2AccessCode
-// @tokenUrl https://example.com/oauth/token
-// @authorizationUrl https://example.com/oauth/authorize
-// @scope.admin Grants read and write access to administrative information
 func main() {
   // Echo instance
   e := echo.New()
@@ -81,20 +53,17 @@ func main() {
 
 // Handlers
 
-// @title Swagger Example API
-// @version 1.0
-// @description This is a sample server Petstore server.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host petstore.swagger.io
-// @BasePath /v2
+// geolocate godoc
+// @Summary returns geolocation info given ip address
+// @Description inquires IP geolocation's API to get details in json format
+// @Tags geolocate
+// @Accept plain
+// @Produce json
+// @Param ip path string true "valid ipv4/v6 address"
+// @Success 200 {string} string "ok"
+// @Failure 400 {string} string "invalid or missing ip address"
+// @Failure 500 {string} string "unable to parse response from geolocation API"
+// @Router /geolocate/{ip} [get]
 func geolocate(c echo.Context) error {
   // parse the IP address
   ip := c.Param("ip") 
@@ -102,7 +71,7 @@ func geolocate(c echo.Context) error {
 
   if strings.TrimSpace(ip) == "" || len(ip) == 0 {
     return c.String(http.StatusBadRequest, "missing ip address input")
-  } else if net.ParseIP(ip) == nil {
+  } else if net.ParseIP(html.UnescapeString(strings.ReplaceAll(ip, "%3A", ":"))) == nil {
     // https://golangbyexample.com/validate-an-ip-address-in-go/
     msg := "invalid ip address, make sure it is valid ip v4 or v6 address"
     return c.String(http.StatusBadRequest, msg)
@@ -122,13 +91,10 @@ func geolocate(c echo.Context) error {
     return c.String(http.StatusBadRequest, "invalid request to geolocation API")
   }
   defer resp.Body.Close()
+
   body, err := ioutil.ReadAll(resp.Body)
   if err != nil {
     return c.String(http.StatusInternalServerError, "unable to parse response from geolocation API")
   }
   return c.String(http.StatusOK, string(body))
-}
-
-func swagger(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
 }

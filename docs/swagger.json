@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server Petstore server.",
-        "title": "Swagger Example API",
+        "description": "API for getting geolocation info",
+        "title": "Geolocation API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
@@ -15,55 +15,50 @@
         },
         "version": "1.0"
     },
-    "host": "petstore.swagger.io",
-    "basePath": "/v2",
-    "paths": {},
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
-        "BasicAuth": {
-            "type": "basic"
-        },
-        "OAuth2AccessCode": {
-            "type": "oauth2",
-            "flow": "accessCode",
-            "authorizationUrl": "https://example.com/oauth/authorize",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information"
-            }
-        },
-        "OAuth2Application": {
-            "type": "oauth2",
-            "flow": "application",
-            "authorizationUrl": "",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "write": " Grants write access"
-            }
-        },
-        "OAuth2Implicit": {
-            "type": "oauth2",
-            "flow": "implicit",
-            "authorizationUrl": "https://example.com/oauth/authorize",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "write": " Grants write access"
-            }
-        },
-        "OAuth2Password": {
-            "type": "oauth2",
-            "flow": "password",
-            "authorizationUrl": "",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "read": " Grants read access",
-                "write": " Grants write access"
+    "host": "localhost:8080",
+    "paths": {
+        "/geolocate/{ip}": {
+            "get": {
+                "description": "inquires IP geolocation's API to get details in json format",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "geolocate"
+                ],
+                "summary": "returns geolocation info given ip address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "valid ipv4/v6 address",
+                        "name": "ip",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid or missing ip address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "unable to parse response from geolocation API",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     }

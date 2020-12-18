@@ -32,53 +32,49 @@ var doc = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {},
-    "securityDefinitions": {
-        "ApiKeyAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        },
-        "BasicAuth": {
-            "type": "basic"
-        },
-        "OAuth2AccessCode": {
-            "type": "oauth2",
-            "flow": "accessCode",
-            "authorizationUrl": "https://example.com/oauth/authorize",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information"
-            }
-        },
-        "OAuth2Application": {
-            "type": "oauth2",
-            "flow": "application",
-            "authorizationUrl": "",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "write": " Grants write access"
-            }
-        },
-        "OAuth2Implicit": {
-            "type": "oauth2",
-            "flow": "implicit",
-            "authorizationUrl": "https://example.com/oauth/authorize",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "write": " Grants write access"
-            }
-        },
-        "OAuth2Password": {
-            "type": "oauth2",
-            "flow": "password",
-            "authorizationUrl": "",
-            "tokenUrl": "https://example.com/oauth/token",
-            "scopes": {
-                "admin": " Grants read and write access to administrative information",
-                "read": " Grants read access",
-                "write": " Grants write access"
+    "paths": {
+        "/geolocate/{ip}": {
+            "get": {
+                "description": "inquires IP geolocation's API to get details in json format",
+                "consumes": [
+                    "text/plain"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "geolocate"
+                ],
+                "summary": "returns geolocation info given ip address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "valid ipv4/v6 address",
+                        "name": "ip",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid or missing ip address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "unable to parse response from geolocation API",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     }
@@ -96,11 +92,11 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "petstore.swagger.io",
-	BasePath:    "/v2",
+	Host:        "localhost:8080",
+	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "Swagger Example API",
-	Description: "This is a sample server Petstore server.",
+	Title:       "Geolocation API",
+	Description: "API for getting geolocation info",
 }
 
 type s struct{}
