@@ -5,10 +5,14 @@
 package main
 
 import (
+  // "encoding/json"
+  // "fmt"
+  "os"
   "net/http"
   "io/ioutil"
   "github.com/labstack/echo/v4"
   "github.com/labstack/echo/v4/middleware"
+  "github.com/k0kubun/pp"
 )
 
 func main() {
@@ -21,19 +25,23 @@ func main() {
 
   // Routes
   e.GET("/", hello)
-  e.GET("/geolocate", geolocate)
+  e.GET("/geolocate/:ip", geolocate)
+  e.GET("/swagger/index.html", swagger)
 
   // Start server
-  e.Logger.Fatal(e.Start(":1323"))
+  e.Logger.Fatal(e.Start(":" + os.Args[2]))
 }
 
-// Handler
-func hello(c echo.Context) error {
-  return c.String(http.StatusOK, "Hello, World!")
-}
-
+// Handlers
 func geolocate(c echo.Context) error {
-  resp, err := http.Get("https://httpbin.org/get")
+  ip := c.Param("ip") 
+  pp.Println(ip)
+  // fmt.Printf("%s\n", ip)
+
+  apikey := os.Args[1]
+  pp.Println(apikey)
+  resp, err := http.Get("https://api.ipgeolocation.io/ipgeo?apiKey=" + apikey + "&ip=" + ip)
+  
   if err != nil {
     // handle error
   }
@@ -43,4 +51,8 @@ func geolocate(c echo.Context) error {
     // handle error
   }
   return c.String(http.StatusOK, string(body))
+}
+
+func swagger(c echo.Context) error {
+  return c.String(http.StatusOK, "Hello, World!")
 }
