@@ -83,6 +83,10 @@ func geolocate(c echo.Context) error {
   if net.ParseIP(escaped_ip) == nil {
     // example valid and invalid ipv4/v6 addresses
     // https://golangbyexample.com/validate-an-ip-address-in-go/
+    // validIPV4 := "10.40.210.253"
+    // invalidIPV4 := "1000.40.210.253"
+    // valiIPV6 := "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
+    // invalidIPV6 := "2001:0db8:85a3:0000:0000:8a2e:0370:7334:3445"
     msg := "invalid ip address, make sure it is valid ip v4 or v6 address"
     return c.String(http.StatusBadRequest, msg)
   }
