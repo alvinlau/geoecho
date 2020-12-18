@@ -32,6 +32,8 @@ IP geolocation that queries an IP address and returns location data. `<ip_addres
 
 `GET /swagger/index.html`
 
+Swagger UI meant to be used in browser.  Allows user to test the `geolocate` endpoint in browser.
+
 
 # Testing
 
@@ -54,7 +56,7 @@ The Swagger UI is accessible via `http://<host>:8080/swagger/index.html` once th
 
 # Swagger Code Client
 
-The generated code client is in the `/client` folder
+The generated code client is in the `/client` folder.  The main file to start from is `geoecho_client.go`.
 
 
 # Development
